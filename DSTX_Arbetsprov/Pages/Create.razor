@@ -1,0 +1,62 @@
+﻿@page "/create"
+@using Entities;
+
+<h3>Create Time-Report</h3>
+
+<EditForm Context="formContext" Model="@_timeReport" OnValidSubmit="CreateWorkLog">
+    <DataAnnotationsValidator />
+    <ul>
+        <li>
+            <label for="IdInput">Id</label>
+            <input type="number" id="IdInput" @bind="_timeReport.Id" min="1" placeholder="Id" />
+        </li>
+        <li>
+            <label for="WorkplaceIdInput">Workplace Id</label>
+            <input type="number" id="WorkplaceIdInput" @bind="_timeReport.WorkplaceId" min="1" placeholder="Workplace Id" />
+        </li>
+        <li>
+            <label for="HoursInput">Hours</label>
+            <input type="number" id="HoursInput" @bind="_timeReport.Hours" min="1" max="24" placeholder="Hours" />
+        </li>
+        <li>
+            <label for="DateInput">Date</label>
+            <input type="date" id="DateInput" @bind="_timeReport.Date" />
+        </li>
+        <li>
+            <label for="InfoInput">Extra Info</label>
+            <input type="text" id="InfoInput" @bind="_timeReport.Info" placeholder="Extra Info" />
+        </li>
+    </ul>
+    <ValidationMessage For="@(() => _timeReport.Id)" />
+
+    <button type="submit">Create</button>
+</EditForm>
+
+
+<dív>
+    @if (validEntry)
+    {
+        <p>
+            Id = @_timeReport.Id
+            <br/>
+            Workplace Id = @_timeReport.WorkplaceId
+            <br/>
+            Hours = @_timeReport.Hours
+            <br/>
+            Date = @_timeReport.Date 
+            <br/>
+            Extra Info = @_timeReport.Info
+        </p>
+    }
+</dív>
+
+
+@code {
+    private TimeReport _timeReport { get; set; } = new();
+    private bool validEntry { get; set; } = false;
+
+    private void CreateWorkLog()
+    {
+        validEntry = true;
+    }
+}

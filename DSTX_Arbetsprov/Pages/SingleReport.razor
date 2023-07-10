@@ -1,0 +1,56 @@
+﻿@page "/counter"
+@using Entities;
+@using Services;
+
+<PageTitle>Single</PageTitle>
+
+<h1>Get Single Report</h1>
+
+
+<input @bind-value="@_reportID" type="text" placeholder="Report number" />
+<button class="btn btn-primary" @onclick="GetSingleReport">Search</button>
+@if (_timeReport != null)
+{
+
+    <div>
+        <p>
+            Id = @_timeReport.Id
+            <br />
+            Workplace Id = @_timeReport.WorkplaceId
+            <br />
+            Hours = @_timeReport.Hours
+            <br />
+            Date = @_timeReport.Date.ToShortDateString()
+            <br />
+            Info = @_timeReport.Info
+        </p>
+        
+    </div>
+}
+@code {
+    private int _reportID;
+    private TimeReportService _reportService;
+    private TimeReport _timeReport;
+
+    public SingleReport()
+    {
+        _reportService = new TimeReportService();
+    }
+    //protected override void OnInitialized()
+    //{
+    //    _timeReport = new()
+    //        {
+    //            Id = 0,
+    //            Hours = 0,
+    //            WorkplaceId = 0,
+    //            Date = DateTime.MinValue,
+    //            Info = string.Empty
+    //        };
+    //}
+
+    private async Task GetSingleReport()
+    {
+
+        _timeReport = await _reportService.GetSingleTimeReport(_reportID);
+    }
+}
