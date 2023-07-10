@@ -3,31 +3,29 @@
 
 <h3>Create Time-Report</h3>
 
-<EditForm Context="formContext" Model="@_timeReport" OnValidSubmit="CreateWorkLog">
+<EditForm Context="formContext" Model="@_timeReport" OnValidSubmit="CreateReport">
     <DataAnnotationsValidator />
     <ul>
-        <li>
-            <label for="IdInput">Id</label>
-            <input type="number" id="IdInput" @bind="_timeReport.Id" min="1" placeholder="Id" />
-        </li>
         <li>
             <label for="WorkplaceIdInput">Workplace Id</label>
             <input type="number" id="WorkplaceIdInput" @bind="_timeReport.WorkplaceId" min="1" placeholder="Workplace Id" />
         </li>
         <li>
             <label for="HoursInput">Hours</label>
-            <input type="number" id="HoursInput" @bind="_timeReport.Hours" min="1" max="24" placeholder="Hours" />
+            <input type="number" id="HoursInput" @bind="_timeReport.Hours" min="0" max="24" placeholder="Hours" />
         </li>
         <li>
             <label for="DateInput">Date</label>
-            <input type="date" id="DateInput" @bind="_timeReport.Date" />
+            <input type="date" id="DateInput" @bind="_timeReport.Date" 
+            min="@DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd")" 
+            max="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
         </li>
         <li>
             <label for="InfoInput">Extra Info</label>
             <input type="text" id="InfoInput" @bind="_timeReport.Info" placeholder="Extra Info" />
         </li>
     </ul>
-    <ValidationMessage For="@(() => _timeReport.Id)" />
+    <ValidationMessage For="@(() => _timeReport.WorkplaceId)" />
 
     <button type="submit">Create</button>
 </EditForm>
@@ -43,7 +41,7 @@
             <br/>
             Hours = @_timeReport.Hours
             <br/>
-            Date = @_timeReport.Date 
+            Date = @_timeReport.Date.ToString("yyyy-MM-dd")
             <br/>
             Extra Info = @_timeReport.Info
         </p>
@@ -54,9 +52,18 @@
 @code {
     private TimeReport _timeReport { get; set; } = new();
     private bool validEntry { get; set; } = false;
+    private TimeReportService _reportService;
 
-    private void CreateWorkLog()
+    protected override void OnInitialized()
     {
+        _timeReport.Date = DateTime.Now;
+        base.OnInitialized();
+    }
+    private async Task CreateReport()
+    {
+        _reportService = new TimeReportService();
+        string response = await _reportService.CreateTimeReport(_timeReport);
         validEntry = true;
+
     }
 }
