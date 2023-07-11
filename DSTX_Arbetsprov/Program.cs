@@ -1,6 +1,7 @@
 using PresentationBlazor.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using ServiceContracts;
 using Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<TimeReportService>();
+builder.Services.AddSingleton<ITimeReportService, TimeReportService>();
 
 var app = builder.Build();
 

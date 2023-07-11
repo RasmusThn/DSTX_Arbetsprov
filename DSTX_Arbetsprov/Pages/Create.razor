@@ -1,5 +1,5 @@
 ﻿@page "/create"
-@using Entities;
+
 
 <h3>Create Time-Report</h3>
 
@@ -52,7 +52,7 @@
 @code {
     private TimeReport _timeReport { get; set; } = new();
     private bool validEntry { get; set; } = false;
-    private TimeReportService _reportService;
+    private ITimeReportService _reportService;
 
     protected override void OnInitialized()
     {

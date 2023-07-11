@@ -9,7 +9,7 @@
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (forecasts == null)
+@if (timeReportList == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -18,20 +18,20 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th><button @onclick="SortById">Id</button></th>
+                <th><button @onclick="SortByDate">Date</button></th>
+                <th><button @onclick="SortByHour">Hours</button></th>
+                <th><button @onclick="SortByWorkplaceId">WorkplaceId</button></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var timeReport in timeReportList)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@timeReport.Id</td>
+                    <td>@timeReport.Date.ToShortDateString()</td>
+                    <td>@timeReport.Hours</td>
+                    <td>@timeReport.WorkplaceId</td>
                 </tr>
             }
         </tbody>
@@ -39,10 +39,71 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private ITimeReportService reportService;
+    private List<TimeReport> timeReportList;
+    //private WeatherForecast[]? timeReportList;
+    private bool sortByDateAscending = true;
+    private bool sortByTemperatureCAscending = true;
+    private bool sortByTemperatureFAscending = true;
+    private bool sortBySummaryAscending = true;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        reportService = new TimeReportService();
+        timeReportList = await reportService.GetAllTimeReports();
     }
+
+    #region Sorting
+    private void SortByDate()
+    {
+        if (sortByDateAscending)
+        {
+            timeReportList = timeReportList.OrderBy(f => f.Date).ToList();
+        }
+        else
+        {
+            timeReportList = timeReportList.OrderByDescending(f => f.Date).ToList();
+        }
+        sortByDateAscending = !sortByDateAscending;
+    }
+
+    private void SortByHour()
+    {
+        if (sortByTemperatureCAscending)
+        {
+            timeReportList = timeReportList.OrderBy(f => f.Hours).ToList();
+        }
+        else
+        {
+            timeReportList = timeReportList.OrderByDescending(f => f.Hours).ToList();
+        }
+        sortByTemperatureCAscending = !sortByTemperatureCAscending;
+    }
+
+    private void SortByWorkplaceId()
+    {
+        if (sortByTemperatureFAscending)
+        {
+            timeReportList = timeReportList.OrderBy(f => f.WorkplaceId).ToList();
+        }
+        else
+        {
+            timeReportList = timeReportList.OrderByDescending(f => f.WorkplaceId).ToList();
+        }
+        sortByTemperatureFAscending = !sortByTemperatureFAscending;
+    }
+
+    private void SortById()
+    {
+        if (sortBySummaryAscending)
+        {
+            timeReportList = timeReportList.OrderBy(f => f.Id).ToList();
+        }
+        else
+        {
+            timeReportList = timeReportList.OrderByDescending(f => f.Id).ToList();
+        }
+        sortBySummaryAscending = !sortBySummaryAscending;
+    }
+    #endregion
 }
