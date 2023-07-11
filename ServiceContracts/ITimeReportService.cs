@@ -12,5 +12,6 @@ namespace ServiceContracts
         Task<TimeReport> GetSingleTimeReport(int reportId);
         Task<string> CreateTimeReport(TimeReport timeReport);
         Task<List<TimeReport>> GetAllTimeReports();
+        Task<List<Workplace>> GetAllWorkplacesAsync();
     }
 }

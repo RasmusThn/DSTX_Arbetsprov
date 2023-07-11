@@ -1,13 +1,8 @@
 ﻿@page "/fetchdata"
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>All Data</PageTitle>
 
-@using PresentationBlazor.Data
-@inject WeatherForecastService ForecastService
-
-<h1>Weather forecast</h1>
-
-<p>This component demonstrates fetching data from a service.</p>
+<h1>All Data</h1>
 
 @if (timeReportList == null)
 {
@@ -41,7 +36,7 @@ else
 @code {
     private ITimeReportService reportService;
     private List<TimeReport> timeReportList;
-    //private WeatherForecast[]? timeReportList;
+    private List<Workplace> workplaces;
     private bool sortByDateAscending = true;
     private bool sortByTemperatureCAscending = true;
     private bool sortByTemperatureFAscending = true;
@@ -51,6 +46,7 @@ else
     {
         reportService = new TimeReportService();
         timeReportList = await reportService.GetAllTimeReports();
+        workplaces = await reportService.GetAllWorkplacesAsync();
     }
 
     #region Sorting

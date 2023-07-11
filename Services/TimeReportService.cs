@@ -29,7 +29,6 @@ namespace Services
         {
             try
             {
-
                 HttpResponseMessage response = await _httpClient.GetAsync($"timereport/{reportId}");
 
                 // Check if the request was successful (status code 200)
@@ -131,6 +130,39 @@ namespace Services
                 throw new Exception("An error occurred during the API request.", ex);
             }
         }
+        public async Task<List<Workplace>> GetAllWorkplacesAsync()
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync($"workplace");
+
+                // Check if the request was successful (status code 200)
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    List<Workplace>? workplace = JsonSerializer.Deserialize<List<Workplace>>(responseData, _options);
+                    if (workplace == null)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return workplace;
+                    }
+                }
+                else
+                {
+                    // Return null or throw an exception if the request was not successful
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occurred during the request
+                throw new Exception("An error occurred during the API request.", ex);
+            }
+        }
+
         private TimeReport MapTransferToTimeReport(TransferTimeReportDto transferTimeReport)
         {
             TimeReport timeReport = new TimeReport
