@@ -13,15 +13,25 @@
     formData.append("hours", document.querySelector('#HoursInput').value);
     formData.append("info", document.querySelector('#InfoInput').value);
 
-    
-    return fetch("/api/create", {
-        method: "POST",
-        body: formData,
-    })
-        .then((response) => response.json())
-        .catch((error) => {
-            console.error(error);
-        });
+    const tcs = new Promise((resolve, reject) => {
+        fetch("/api/create", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (Object.keys(data).length !== 0) {
+                    resolve(data);
+                } else {
+                    reject(new Error("Empty response"));
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+
+    return tcs;
 }
 
 window.handleImageUpload = handleImageUpload;

@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<ITimeReportService, TimeReportService>();
+builder.Services.AddSingleton<IControllerService, ControllerService>();
 
 var app = builder.Build();
 

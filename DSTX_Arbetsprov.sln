@@ -7,15 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PresentationBlazor", "DSTX_
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{12F5B470-DA62-42D6-A75B-A778AC52AAAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "DSTXArbetsprovPresentation\API.csproj", "{CD53D9E5-0603-423D-B09E-C423686839F7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{9FF117E7-AB11-4FD2-B15B-9134B7CEF019}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{3EC25848-59D9-4FB1-BBDD-010135F41AB5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{DDBD3788-EEFB-4CA4-9EEA-D0EE9014ADFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{64A42DE3-AEC3-4990-82F9-F5FD21A74811}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{64A42DE3-AEC3-4990-82F9-F5FD21A74811}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{12F5B470-DA62-42D6-A75B-A778AC52AAAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12F5B470-DA62-42D6-A75B-A778AC52AAAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12F5B470-DA62-42D6-A75B-A778AC52AAAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD53D9E5-0603-423D-B09E-C423686839F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD53D9E5-0603-423D-B09E-C423686839F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD53D9E5-0603-423D-B09E-C423686839F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD53D9E5-0603-423D-B09E-C423686839F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9FF117E7-AB11-4FD2-B15B-9134B7CEF019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FF117E7-AB11-4FD2-B15B-9134B7CEF019}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FF117E7-AB11-4FD2-B15B-9134B7CEF019}.Release|Any CPU.ActiveCfg = Release|Any CPU

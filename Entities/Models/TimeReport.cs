@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Entities
+namespace Entities.Models
 {
     public class TimeReport
     {

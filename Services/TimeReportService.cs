@@ -1,5 +1,5 @@
-﻿using Entities;
-using Entities.DataTransferObjects;
+﻿using Entities.DataTransferObjects;
+using Entities.Models;
 using ServiceContracts;
 using System;
 using System.Net;
@@ -59,36 +59,29 @@ namespace Services
                 throw new Exception("An error occurred during the API request.", ex);
             }
         }
-        public async Task<string> CreateTimeReport(TimeReport timeReport)
+        public async Task<int> PostTimeReport(TransferTimeReportDto timeReport)
         {
-            try
+
+            var reportContent = JsonSerializer.Serialize(timeReport);
+            var bodyContent = new StringContent(reportContent, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _httpClient.PostAsync("timereport", bodyContent);
+
+            if (response.IsSuccessStatusCode)
             {
-                var formattedTimeReport = new TransferTimeReportDto
-                {
-                    WorkplaceId = timeReport.WorkplaceId,
-                    Date = timeReport.Date.ToString("yyyy-MM-dd"),
-                    Hours = timeReport.Hours.ToString("0.00"),
-                    Info = timeReport.Info
-                };
 
-                var reportContent = JsonSerializer.Serialize(formattedTimeReport);
-                var bodyContent = new StringContent(reportContent, Encoding.UTF8, "application/json");
+                string responseData = await response.Content.ReadAsStringAsync();
+                TemporaryTimeReportDto temporaryTimeReport = JsonSerializer.Deserialize<TemporaryTimeReportDto>(responseData, _options);
 
-                HttpResponseMessage response = await _httpClient.PostAsync("timereport", bodyContent);
+                int id = Convert.ToInt32(temporaryTimeReport.Id);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return response.StatusCode.ToString();
-                }
-                else
-                {
-                    return null;
-                }
+                return id;
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("An error occurred during the API request.", ex);
+                throw new Exception("An error occurred during the API request.");
             }
+
         }
         public async Task<List<TimeReport>> GetAllTimeReports()
         {
@@ -96,7 +89,6 @@ namespace Services
             {
                 HttpResponseMessage response = await _httpClient.GetAsync($"timereport");
 
-                // Check if the request was successful (status code 200)
                 if (response.IsSuccessStatusCode)
                 {
                     string responseData = await response.Content.ReadAsStringAsync();
@@ -116,7 +108,6 @@ namespace Services
                 }
                 else
                 {
-                    // Return null or throw an exception if the request was not successful
                     return null;
                 }
             }
@@ -158,7 +149,7 @@ namespace Services
                 throw new Exception("An error occurred during the API request.", ex);
             }
         }
-        public async Task<List<TimeReport>> GetAllTimeReportsByIdAndDate(DateTime fromDate,DateTime toDate,int id)
+        public async Task<List<TimeReport>> GetAllTimeReportsByIdAndDate(DateTime fromDate, DateTime toDate, int id)
         {
             try
             {

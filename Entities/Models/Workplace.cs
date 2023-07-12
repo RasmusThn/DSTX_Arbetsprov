@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Entities
+namespace Entities.Models
 {
     public class Workplace
     {
