@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -28,5 +29,6 @@ namespace Entities
         [JsonPropertyName("info")]
         [Display(Name = "Info")]
         public string? Info { get; set; }
+
     }
 }

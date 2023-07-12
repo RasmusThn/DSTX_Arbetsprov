@@ -1,69 +1,120 @@
 ﻿@page "/create"
+@using System.Text.Json;
+@inject IJSRuntime JSRuntime
 
 
 <h3>Create Time-Report</h3>
 
-<EditForm Context="formContext" Model="@_timeReport" OnValidSubmit="CreateReport">
-    <DataAnnotationsValidator />
-    <ul>
-        <li>
-            <label for="WorkplaceIdInput">Workplace Id</label>
-            <input type="number" id="WorkplaceIdInput" @bind="_timeReport.WorkplaceId" min="1" placeholder="Workplace Id" />
-        </li>
-        <li>
-            <label for="HoursInput">Hours</label>
-            <input type="number" id="HoursInput" @bind="_timeReport.Hours" min="0" max="24" placeholder="Hours" />
-        </li>
-        <li>
-            <label for="DateInput">Date</label>
-            <input type="date" id="DateInput" @bind="_timeReport.Date" 
-            min="@DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd")" 
-            max="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
-        </li>
-        <li>
-            <label for="InfoInput">Extra Info</label>
-            <input type="text" id="InfoInput" @bind="_timeReport.Info" placeholder="Extra Info" />
-        </li>
-    </ul>
-    <ValidationMessage For="@(() => _timeReport.WorkplaceId)" />
+@if (workplaces == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 
-    <button type="submit">Create</button>
-</EditForm>
+    <EditForm Context="formContext" Model="@timeReport" OnValidSubmit="HandleCreateReport">
+        <DataAnnotationsValidator />
+
+        <ul>
+            <li>
+                <label for="DateInput">Date: </label>
+                <input type="date" id="DateInput" @bind="timeReport.Date"
+                       min="@DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd")"
+                       max="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
+            </li>
+            <li>
+                <label for="HoursInput">Hours: </label>
+                <input type="number" id="HoursInput" @bind="timeReport.Hours" min="0" max="24" placeholder="Hours" />
+            </li>
+            <li>
+                <select @onchange="SetSelectedId" id="workplaceSelect">
+                    
+                    @foreach (var workplace in @workplaces)
+                    {
+                        <option selected value="@workplace.Id">@workplace.Name</option>
+                    }
+                </select>
+            </li>
+            <li>
+                <label for="InfoInput">Info: </label>
+                <input type="text" id="InfoInput" @bind="timeReport.Info" placeholder="Info" />
+            </li>
+            <li>
+                <label for="imageInput">Image: </label>
+                <input type="file" id="imageInput" @ref="imageInputRef" />
+            </li>
+        </ul>
+        <ValidationMessage For="@(() => timeReport.WorkplaceId)" />
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    </EditForm>
 
 
-<dív>
-    @if (validEntry)
-    {
-        <p>
-            Id = @_timeReport.Id
-            <br/>
-            Workplace Id = @_timeReport.WorkplaceId
-            <br/>
-            Hours = @_timeReport.Hours
-            <br/>
-            Date = @_timeReport.Date.ToString("yyyy-MM-dd")
-            <br/>
-            Extra Info = @_timeReport.Info
-        </p>
-    }
-</dív>
+    <dív>
+        @if (validEntry)
+        {
+            <p>
+                Workplace Id = @timeReport.WorkplaceId
+                <br />
+                Hours = @timeReport.Hours
+                <br />
+                Date = @timeReport.Date.ToString("yyyy-MM-dd")
+                <br />
+                Extra Info = @timeReport.Info
+            </p>
+            <p><em>Successfully created</em></p>
+        }
+    </dív>
+}
 
 
 @code {
-    private TimeReport _timeReport { get; set; } = new();
+    private TimeReport timeReport { get; set; } = new();
+    private List<Workplace> workplaces;
     private bool validEntry { get; set; } = false;
-    private ITimeReportService _reportService;
+    private ITimeReportService reportService;
+    private IBrowserFile imageFile;
+    private int selectedId = 0;
+    private ElementReference imageInputRef;
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _timeReport.Date = DateTime.Now;
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("import", "/js/uploadImage.js");
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        timeReport.Date = DateTime.Now;
+        reportService = new TimeReportService();
+        workplaces = await reportService.GetAllWorkplacesAsync();
         base.OnInitialized();
     }
+    private async Task HandleCreateReport()
+    {
+        var response = await JSRuntime.InvokeAsync<JsonElement>("handleImageUpload", imageInputRef);
+
+        if (response.TryGetProperty("success", out var success) && success.GetBoolean())
+        {
+            validEntry = true;
+        }
+        else
+        {
+            // Operation failed or response doesn't contain the expected property
+        }
+        
+    }
+    private async Task SetSelectedId(ChangeEventArgs e)
+    {
+        selectedId = Convert.ToInt32(e.Value);
+
+    }
+   
     private async Task CreateReport()
     {
-        _reportService = new TimeReportService();
-        string response = await _reportService.CreateTimeReport(_timeReport);
+        
+        //string response = await reportService.CreateTimeReport(timeReport);
         validEntry = true;
-
     }
 }
