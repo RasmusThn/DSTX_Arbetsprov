@@ -3,40 +3,83 @@
 <PageTitle>All Data</PageTitle>
 
 <h1>All Data</h1>
+@if (workplaces == null)
+{
 
+}
+else
+{
+    <div>
+
+        <label for="workplace">Choose a Workplace: </label>
+        <select @onchange="SetSelectedId" name="workplace">
+            <option value="0" selected>All</option>
+            @foreach (var workplace in @workplaces)
+            {
+                <option value="@workplace.Id">@workplace.Name</option>
+            }
+        </select>
+
+        <br />
+        <label for="fromdate">From Date: </label>
+        <input @bind-value="dates[0]" name="fromdate" type="date" />
+
+        <br />
+        <label for="todate">To Date: </label>
+        <input @bind-value="dates[1]" name="todate" type="date" />
+        <br />
+        <button @onclick="GetAllTimeReportsById" class="btn btn-primary" type="submit">Search</button>
+    </div>
+
+}
 @if (timeReportList == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th><button @onclick="SortById">Id</button></th>
-                <th><button @onclick="SortByDate">Date</button></th>
-                <th><button @onclick="SortByHour">Hours</button></th>
-                <th><button @onclick="SortByWorkplaceId">WorkplaceId</button></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var timeReport in timeReportList)
-            {
+    @if (@timeReportList.Count == 0)
+    {
+        <p><em>No Data between the entered dates</em></p>
+
+    }
+    else
+    {
+
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@timeReport.Id</td>
-                    <td>@timeReport.Date.ToShortDateString()</td>
-                    <td>@timeReport.Hours</td>
-                    <td>@timeReport.WorkplaceId</td>
+                    <th><button @onclick="SortById">Id</button></th>
+                    <th><button @onclick="SortByDate">Date</button></th>
+                    <th><button @onclick="SortByHour">Hours</button></th>
+                    <th><button @onclick="SortByWorkplaceId">WorkplaceId</button></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var timeReport in timeReportList)
+                {
+                    <tr>
+                        <td>@timeReport.Id</td>
+                        <td>@timeReport.Date.ToShortDateString()</td>
+                        <td>@timeReport.Hours</td>
+                        <td>@timeReport.WorkplaceId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
+
 
 @code {
     private ITimeReportService reportService;
     private List<TimeReport> timeReportList;
+    private List<TimeReport> fullTimeReportList;
     private List<Workplace> workplaces;
+    private int selectedId = 0;
+    private DateTime[] dates = new DateTime[2];
+    private DateTime dateTimeNow = DateTime.Now;
+
     private bool sortByDateAscending = true;
     private bool sortByTemperatureCAscending = true;
     private bool sortByTemperatureFAscending = true;
@@ -45,11 +88,23 @@ else
     protected override async Task OnInitializedAsync()
     {
         reportService = new TimeReportService();
-        timeReportList = await reportService.GetAllTimeReports();
         workplaces = await reportService.GetAllWorkplacesAsync();
+    }
+    private async Task SetSelectedId(ChangeEventArgs e)
+    {
+        selectedId = Convert.ToInt32(e.Value);
+
+    }
+    private async Task GetAllTimeReportsById()
+    {
+        timeReportList = await reportService.GetAllTimeReportsByIdAndDate(dates[0], dates[1], selectedId);
     }
 
     #region Sorting
+    private async Task SortTimeReportsById(int id)
+    {
+        timeReportList = fullTimeReportList.Where(t => t.Id == id).ToList();
+    }
     private void SortByDate()
     {
         if (sortByDateAscending)

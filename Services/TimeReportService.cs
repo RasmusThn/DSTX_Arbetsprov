@@ -94,7 +94,6 @@ namespace Services
         {
             try
             {
-
                 HttpResponseMessage response = await _httpClient.GetAsync($"timereport");
 
                 // Check if the request was successful (status code 200)
@@ -105,16 +104,13 @@ namespace Services
 
                     if (transferTimeReports != null)
                     {
-
                         // Map the TransferTimeReportDto objects to TimeReport objects
                         List<TimeReport> timeReports = transferTimeReports.Select(MapTransferToTimeReport).ToList();
-
 
                         return timeReports;
                     }
                     else
                     {
-
                         return null;
                     }
                 }
@@ -162,6 +158,57 @@ namespace Services
                 throw new Exception("An error occurred during the API request.", ex);
             }
         }
+        public async Task<List<TimeReport>> GetAllTimeReportsByIdAndDate(DateTime fromDate,DateTime toDate,int id)
+        {
+            try
+            {
+                string from_date = fromDate.ToString("yyyy-MM-dd");
+                string to_date = toDate.ToString("yyyy-MM-dd");
+                string url = "";
+
+                //if "0", client will get all workplaces
+                if (id == 0)
+                {
+                    url = $"timereport?from_date={from_date}&to_date={to_date}";
+                }
+                else
+                {
+                    url = $"timereport?from_date={from_date}&to_date={to_date}&workplace={id}";
+                }
+
+                HttpResponseMessage response = await _httpClient.GetAsync(url);
+
+                // Check if the request was successful (status code 200)
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    List<TransferTimeReportDto> transferTimeReports = JsonSerializer.Deserialize<List<TransferTimeReportDto>>(responseData, _options);
+
+                    if (transferTimeReports != null)
+                    {
+                        // Map the TransferTimeReportDto objects to TimeReport objects
+                        List<TimeReport> timeReports = transferTimeReports.Select(MapTransferToTimeReport).ToList();
+
+                        return timeReports;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    // Return null or throw an exception if the request was not successful
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occurred during the request
+                throw new Exception("An error occurred during the API request.", ex);
+            }
+        }
+
 
         private TimeReport MapTransferToTimeReport(TransferTimeReportDto transferTimeReport)
         {
@@ -187,5 +234,6 @@ namespace Services
 
             return httpClient;
         }
+
     }
 }
