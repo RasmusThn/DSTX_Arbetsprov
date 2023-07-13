@@ -60,5 +60,99 @@ a, .btn-link {
 }
 
     .blazor-error-boundary::after {
-        content: "An error has occurred."
+        content: "An error has occurred.";
+    }
+.content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.text-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    margin-bottom: 15px;
+}
+
+.result-container {
+    margin-top: 20px;
+}
+
+.form-container {
+    max-width: 400px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+    .form-group label {
+        width: 80px;
+        margin-right: 10px;
+    }
+
+    .form-group input[type="date"],
+    .form-group select {
+        flex: 1;
+        width: 100%;
+    }
+
+    .form-group button {
+        margin: 0;
+    }
+
+.table-container {
+    margin-top: 20px;
+    width: 80%;
+    
+
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: inherit;
+}
+
+    .table thead th {
+        background-color: #f8f8f8;
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .table tbody td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #f8f8f8;
+    }
+
+    .table tbody tr:hover {
+        background-color: #eaeaea;
+        cursor: pointer;
     }

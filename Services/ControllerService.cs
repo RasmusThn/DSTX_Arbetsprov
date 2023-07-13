@@ -35,9 +35,9 @@ namespace Services
 
             int id;
 
-            id = await _timeReportService.PostTimeReport(formattedTimeReport); 
+            //id = await _timeReportService.PostTimeReport(formattedTimeReport); 
 
-            //id = 1337;  // UnComment this when testing and comment out above line to skip posting to API 
+            id = 1337;  // UnComment this when testing and comment out above line to skip posting to API 
 
             formattedTimeReport.Id = id;
             

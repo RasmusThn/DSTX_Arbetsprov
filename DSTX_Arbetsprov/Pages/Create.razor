@@ -4,73 +4,66 @@
 
 @inject IJSRuntime JSRuntime
 
+<div class="container">
+    <div class="form-container">
+        <h3>Create Time-Report</h3>
 
-<h3>Create Time-Report</h3>
+        @if (workplaces == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <EditForm Context="formContext" Model="@timeReport" OnValidSubmit="HandleCreateReport">
+                <DataAnnotationsValidator />
 
-@if (workplaces == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-
-    <EditForm Context="formContext" Model="@timeReport" OnValidSubmit="HandleCreateReport">
-        <DataAnnotationsValidator />
-
-        <ul>
-            <li>
                 <label for="DateInput">Date: </label>
                 <input type="date" id="DateInput" @bind="timeReport.Date"
                        min="@DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd")"
                        max="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
-            </li>
-            <li>
+
                 <label for="HoursInput">Hours: </label>
                 <input type="number" id="HoursInput" @bind="timeReport.Hours" min="0" max="24" placeholder="Hours" />
-            </li>
-            <li>
-                <select @onchange="SetSelectedId" id="workplaceSelect">
 
+                <select @onchange="SetSelectedId" id="workplaceSelect" class="form-control">
                     @foreach (var workplace in @workplaces)
                     {
                         <option selected value="@workplace.Id">@workplace.Name</option>
                     }
                 </select>
-            </li>
-            <li>
+
                 <label for="InfoInput">Info: </label>
-                <input type="text" id="InfoInput" @bind="timeReport.Info" placeholder="Info" />
-            </li>
-            <li>
+                <input type="text" id="InfoInput" @bind="timeReport.Info" placeholder="Info" class="form-control" />
+
                 <label for="imageInput">Image: </label>
-                <input type="file" id="imageInput" @ref="imageInputRef" />
-            </li>
-        </ul>
-        <ValidationMessage For="@(() => timeReport.WorkplaceId)" />
+                <input type="file" id="imageInput" @ref="imageInputRef" class="form-control-file" />
 
-        <button type="submit" class="btn btn-primary">Create</button>
-    </EditForm>
+                <ValidationMessage For="@(() => timeReport.WorkplaceId)" />
+
+                <button type="submit" class="btn btn-primary">Create</button>
+            </EditForm>
 
 
-    <dív>
-        @if (validEntry)
-        {
-            <p>
-                Id = @timeReport.Id
-                <br />
-                Workplace Id = @timeReport.WorkplaceId
-                <br />
-                Hours = @timeReport.Hours
-                <br />
-                Date = @timeReport.Date.ToString("yyyy-MM-dd")
-                <br />
-                Extra Info = @timeReport.Info
-            </p>
-            <p><em>Successfully created</em></p>
+            <div class="result-container">
+                @if (validEntry)
+                {
+                    <p>
+                        Id = @timeReport.Id
+                        <br />
+                        Workplace Id = @timeReport.WorkplaceId
+                        <br />
+                        Hours = @timeReport.Hours
+                        <br />
+                        Date = @timeReport.Date.ToString("yyyy-MM-dd")
+                        <br />
+                        Extra Info = @timeReport.Info
+                    </p>
+                    <p><em>Successfully created</em></p>
+                }
+            </div>
         }
-    </dív>
-}
-
+    </div>
+</div>
 
 @code {
     [Inject]
