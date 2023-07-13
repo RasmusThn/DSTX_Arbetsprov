@@ -18,7 +18,7 @@
     else
     {
         <div class="container">
-            <EditForm Context="formContext" class="form-container" Model="@timeReport" OnValidSubmit="HandleCreateReport">
+            <EditForm Context="formContext" class="form-container" Model="@timeReport" OnValidSubmit="HandleCreateReportAsync">
                 <DataAnnotationsValidator />
 
                 <div class="form-group">
@@ -91,7 +91,7 @@
     private List<Workplace> workplaces;
     private bool validEntry { get; set; } = false;
     private bool unvalidEntry { get; set; } = false;
-    private int selectedId = 0;
+    private int selectedId;
     private IBrowserFile imageFile;
     private ElementReference imageInputRef;
 
@@ -109,7 +109,7 @@
         workplaces = await _timeReportService.GetAllWorkplacesAsync();
         base.OnInitialized();
     }
-    private async Task HandleCreateReport()
+    private async Task HandleCreateReportAsync()
     {
         validEntry = false;
         unvalidEntry = false;
@@ -131,7 +131,7 @@
         }
 
     }
-    private async Task SetSelectedId(ChangeEventArgs e)
+    private void SetSelectedId(ChangeEventArgs e)
     {
         selectedId = Convert.ToInt32(e.Value);
 

@@ -1,10 +1,10 @@
-﻿@page "/single"
+﻿@page "/report"
 
 <PageTitle>Single Report</PageTitle>
 
 <div class="content-container">
     <div class="text-container">
-        <h1><em>Single Report by Id</em></h1>
+        <h1><em>Get Report by Id</em></h1>
     </div>
 
     <div class="form-container">
@@ -44,7 +44,16 @@
     {
         if (_reportID != 0)
         {
+            try
+            {
             _timeReport = await _timeReportService.GetSingleTimeReportAsync(_reportID);
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("An error occurred while retrieving time report: " + ex.Message);
+            }
         }
 
     }

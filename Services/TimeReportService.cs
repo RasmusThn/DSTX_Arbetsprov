@@ -1,6 +1,7 @@
 ﻿using Entities.DataTransferObjects;
 using Entities.Models;
 using ServiceContracts;
+using Services.Exceptions;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -29,178 +30,113 @@ namespace Services
 
         public async Task<TimeReport> GetSingleTimeReportAsync(int reportId)
         {
-            try
+
+            HttpResponseMessage response = await _httpClient.GetAsync($"timereport/{reportId}");
+            await HandleResponseAsync(response);
+
+            string responseData = await response.Content.ReadAsStringAsync();
+            TransferTimeReportDto? transferTimeReport = JsonSerializer.Deserialize<TransferTimeReportDto>(responseData, _options);
+            if (transferTimeReport == null)
             {
-                HttpResponseMessage response = await _httpClient.GetAsync($"timereport/{reportId}");
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-                    TransferTimeReportDto? transferTimeReport = JsonSerializer.Deserialize<TransferTimeReportDto>(responseData, _options);
-                    if (transferTimeReport == null)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-
-                        TimeReport timeReport = MapTransferToTimeReport(transferTimeReport);
-                        return timeReport;
-                    }
-                }
-                else
-                {
-                    // Return null or throw an exception if the request was not successful
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred during the API request.", ex);
-            }
-        }
-        public async Task<int> PostTimeReportAsync(TransferTimeReportDto timeReport)
-        {
-
-            var reportContent = JsonSerializer.Serialize(timeReport);
-            var bodyContent = new StringContent(reportContent, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await _httpClient.PostAsync("timereport", bodyContent);
-
-            if (response.IsSuccessStatusCode)
-            {
-
-                string responseData = await response.Content.ReadAsStringAsync();
-                TemporaryTimeReportDto temporaryTimeReport = JsonSerializer.Deserialize<TemporaryTimeReportDto>(responseData, _options);
-
-                int id = Convert.ToInt32(temporaryTimeReport.Id);
-
-                return id;
+                return null;
             }
             else
             {
-                throw new Exception("An error occurred during the API request.");
+                TimeReport timeReport = MapTransferToTimeReport(transferTimeReport);
+                return timeReport;
             }
 
         }
+        public async Task<int> PostTimeReportAsync(TransferTimeReportDto timeReport)
+        {
+            var reportContent = JsonSerializer.Serialize(timeReport);
+            var bodyContent = new StringContent(reportContent, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _httpClient.PostAsync("timereport", bodyContent).ConfigureAwait(false);
+            await HandleResponseAsync(response);
+
+            string responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            TemporaryTimeReportDto temporaryTimeReport = JsonSerializer.Deserialize<TemporaryTimeReportDto>(responseData, _options);
+
+            int id = Convert.ToInt32(temporaryTimeReport.Id);
+
+            return id;
+        }
+        [Obsolete]//TODO:kolla om den är de.
         public async Task<List<TimeReport>> GetAllTimeReportsAsync()
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync($"timereport");
+            HttpResponseMessage response = await _httpClient.GetAsync("timereport").ConfigureAwait(false);
+            await HandleResponseAsync(response);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-                    List<TransferTimeReportDto> transferTimeReports = JsonSerializer.Deserialize<List<TransferTimeReportDto>>(responseData, _options);
+            string responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            List<TransferTimeReportDto> transferTimeReports = JsonSerializer.Deserialize<List<TransferTimeReportDto>>(responseData, _options);
 
-                    if (transferTimeReports != null)
-                    {
-                        // Map the TransferTimeReportDto objects to TimeReport objects
-                        List<TimeReport> timeReports = transferTimeReports.Select(MapTransferToTimeReport).ToList();
+            // Map the TransferTimeReportDto objects to TimeReport objects
+            List<TimeReport> timeReports = transferTimeReports?.Select(MapTransferToTimeReport).ToList();
 
-                        return timeReports;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that occurred during the request
-                throw new Exception("An error occurred during the API request.", ex);
-            }
+            return timeReports;
         }
         public async Task<List<Workplace>> GetAllWorkplacesAsync()
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync($"workplace");
+            HttpResponseMessage response = await _httpClient.GetAsync("workplace").ConfigureAwait(false);
+            await HandleResponseAsync(response);
 
-                // Check if the request was successful (status code 200)
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-                    List<Workplace>? workplace = JsonSerializer.Deserialize<List<Workplace>>(responseData, _options);
-                    if (workplace == null)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        return workplace;
-                    }
-                }
-                else
-                {
-                    // Return null or throw an exception if the request was not successful
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that occurred during the request
-                throw new Exception("An error occurred during the API request.", ex);
-            }
+            string responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            List<Workplace> workplaces = JsonSerializer.Deserialize<List<Workplace>>(responseData, _options);
+
+            return workplaces;
         }
         public async Task<List<TimeReport>> GetAllTimeReportsByIdAndDateAsync(DateTime fromDate, DateTime toDate, int id)
         {
-            try
+            string from_date = fromDate.ToString("yyyy-MM-dd");
+            string to_date = toDate.ToString("yyyy-MM-dd");
+            string url = "";
+
+            //if "0", client will get all workplaces
+            if (id == 0)
             {
-                string from_date = fromDate.ToString("yyyy-MM-dd");
-                string to_date = toDate.ToString("yyyy-MM-dd");
-                string url = "";
-
-                //if "0", client will get all workplaces
-                if (id == 0)
-                {
-                    url = $"timereport?from_date={from_date}&to_date={to_date}";
-                }
-                else
-                {
-                    url = $"timereport?from_date={from_date}&to_date={to_date}&workplace={id}";
-                }
-
-                HttpResponseMessage response = await _httpClient.GetAsync(url);
-
-                // Check if the request was successful (status code 200)
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-                    List<TransferTimeReportDto> transferTimeReports = JsonSerializer.Deserialize<List<TransferTimeReportDto>>(responseData, _options);
-
-                    if (transferTimeReports != null)
-                    {
-                        // Map the TransferTimeReportDto objects to TimeReport objects
-                        List<TimeReport> timeReports = transferTimeReports.Select(MapTransferToTimeReport).ToList();
-
-                        return timeReports;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    // Return null or throw an exception if the request was not successful
-                    return null;
-                }
+                url = $"timereport?from_date={from_date}&to_date={to_date}";
             }
-            catch (Exception ex)
+            else
             {
-                // Handle any exceptions that occurred during the request
-                throw new Exception("An error occurred during the API request.", ex);
+                url = $"timereport?from_date={from_date}&to_date={to_date}&workplace={id}";
             }
+
+            HttpResponseMessage response = await _httpClient.GetAsync(url).ConfigureAwait(false);
+            await HandleResponseAsync(response);
+
+            string responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            List<TransferTimeReportDto> transferTimeReports = JsonSerializer.Deserialize<List<TransferTimeReportDto>>(responseData, _options);
+
+            // Map the TransferTimeReportDto objects to TimeReport objects
+            List<TimeReport> timeReports = transferTimeReports?.Select(MapTransferToTimeReport).ToList();
+
+            return timeReports;
         }
 
-
+        private async Task<bool> HandleResponseAsync(HttpResponseMessage response)
+        {
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new NotFoundException("The requested resource was not found.");
+            }
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedException("Unauthorized access. Please authenticate.");
+            }
+            else if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new ForbiddenException("Access to the resource is forbidden.");
+            }
+            else
+            {
+                throw new ApiException("An error occurred during the API request.");
+            }
+        }
         private TimeReport MapTransferToTimeReport(TransferTimeReportDto transferTimeReport)
         {
             TimeReport timeReport = new TimeReport

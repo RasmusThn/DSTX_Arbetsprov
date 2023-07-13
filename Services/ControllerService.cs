@@ -19,6 +19,7 @@ namespace Services
 
         public async Task<TransferTimeReportDto> CreateTimeReportAsync(IFormCollection form)
         {
+            
             TransferTimeReportDto formattedTimeReport = new TransferTimeReportDto
             {
                 WorkplaceId = Convert.ToInt32(form["workplaceId"]),
@@ -29,6 +30,7 @@ namespace Services
 
             int id;
 
+            // Posts timeReport to trinax Api to get new Id 
             id = await _timeReportService.PostTimeReportAsync(formattedTimeReport); 
 
             //id = 1337;  // UnComment this when testing and comment out line above to skip posting to API 
@@ -39,7 +41,7 @@ namespace Services
             var file = form.Files["image"];
             if (file != null && file.Length > 0)
             {
-                _dataAccessService.SaveFileToDB(file,id);
+               await _dataAccessService.SaveFileToDBAsync(file,id);
             }
             return formattedTimeReport;
         }

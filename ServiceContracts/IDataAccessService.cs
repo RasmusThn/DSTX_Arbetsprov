@@ -8,6 +8,6 @@ namespace ServiceContracts
 {
     public interface IDataAccessService
     {
-        void SaveFileToDB(Microsoft.AspNetCore.Http.IFormFile file,int id);
+        Task SaveFileToDBAsync(Microsoft.AspNetCore.Http.IFormFile file,int id);
     }
 }

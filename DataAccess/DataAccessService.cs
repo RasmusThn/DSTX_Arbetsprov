@@ -18,11 +18,11 @@ namespace DataAccess
             _connectionString = connectionString;
         }
 
-        public void SaveFileToDB(IFormFile file, int id)
+        public async Task SaveFileToDBAsync(IFormFile file, int id)
         {
             using (var connection = new MySqlConnection(_connectionString))
             {
-                connection.Open();
+               await connection.OpenAsync();
 
                 var sanitizedFilename = MySqlHelper.EscapeString(file.FileName);
 
@@ -37,7 +37,7 @@ namespace DataAccess
                     command.Parameters.AddWithValue("@ReportId", id);
 
                     // Execute the SQL command
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                 }
             }
         }
