@@ -14,13 +14,15 @@ namespace Services
 {
     public class TimeReportService : ITimeReportService
     {
-        private string myNotSoSecretToken = "3082b4e707da7cf9e8ebe69ab6e8c14c";
-        private string _baseAddress = "https://arbetsprov.trinax.se/api/v1/";
-        private HttpClient _httpClient;
+        private readonly string _myNotSoSecretToken;
+        private readonly string _baseAddress;
+        private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _options;
 
-        public TimeReportService()
+        public TimeReportService(string myNotSoSecretToken, string baseAdress)
         {
+            _baseAddress = baseAdress;
+            _myNotSoSecretToken = myNotSoSecretToken;
             _httpClient = CreateHttpClient();
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
@@ -219,7 +221,7 @@ namespace Services
             HttpClient httpClient = new HttpClient();
 
             httpClient.BaseAddress = new Uri(_baseAddress);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", myNotSoSecretToken);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", _myNotSoSecretToken);
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

@@ -73,13 +73,15 @@ else
 
 
 @code {
+    [Inject]
+    private ITimeReportService _timeReportService { get; set; }
     private TimeReport timeReport { get; set; } = new();
     private List<Workplace> workplaces;
     private bool validEntry { get; set; } = false;
-    private ITimeReportService reportService;
-    private IBrowserFile imageFile;
     private int selectedId = 0;
+    private IBrowserFile imageFile;
     private ElementReference imageInputRef;
+    
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -91,8 +93,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         timeReport.Date = DateTime.Now;
-        reportService = new TimeReportService();
-        workplaces = await reportService.GetAllWorkplacesAsync();
+        workplaces = await _timeReportService.GetAllWorkplacesAsync();
         base.OnInitialized();
     }
     private async Task HandleCreateReport()
@@ -119,12 +120,5 @@ else
     {
         selectedId = Convert.ToInt32(e.Value);
 
-    }
-
-    private async Task CreateReport()
-    {
-
-        //string response = await reportService.CreateTimeReport(timeReport);
-        validEntry = true;
     }
 }

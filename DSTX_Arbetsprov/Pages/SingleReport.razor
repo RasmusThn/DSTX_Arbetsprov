@@ -26,29 +26,13 @@
     </div>
 }
 @code {
+    [Inject]
+    private ITimeReportService _timeReportService { get; set; }
     private int _reportID;
-    private ITimeReportService _reportService;
     private TimeReport _timeReport;
-
-    public SingleReport()
-    {
-        _reportService = new TimeReportService();
-    }
-    //protected override void OnInitialized()
-    //{
-    //    _timeReport = new()
-    //        {
-    //            Id = 0,
-    //            Hours = 0,
-    //            WorkplaceId = 0,
-    //            Date = DateTime.MinValue,
-    //            Info = string.Empty
-    //        };
-    //}
-
+   
     private async Task GetSingleReport()
     {
-
-        _timeReport = await _reportService.GetSingleTimeReport(_reportID);
+        _timeReport = await _timeReportService.GetSingleTimeReport(_reportID);
     }
 }

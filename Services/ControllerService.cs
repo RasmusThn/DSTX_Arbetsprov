@@ -25,7 +25,6 @@ namespace Services
 
         public async Task<TransferTimeReportDto> CreateTimeReport(IFormCollection form)
         {
-
             TransferTimeReportDto formattedTimeReport = new TransferTimeReportDto
             {
                 WorkplaceId = Convert.ToInt32(form["workplaceId"]),

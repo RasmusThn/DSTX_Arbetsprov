@@ -14,7 +14,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<ITimeReportService, TimeReportService>();
+builder.Services.AddSingleton<ITimeReportService>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var myNotSoSecretToken = configuration.GetValue<string>("MySettings:MyNotSoSecretToken");
+    var baseAddress = configuration.GetValue<string>("MySettings:BaseAddress");
+
+    return new TimeReportService(myNotSoSecretToken, baseAddress);
+});
 builder.Services.AddSingleton<IControllerService, ControllerService>();
 builder.Services.AddSingleton<IDataAccessService, DataAccessService>(provider =>
 {
