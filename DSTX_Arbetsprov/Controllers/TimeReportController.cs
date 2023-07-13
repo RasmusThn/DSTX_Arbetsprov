@@ -23,7 +23,7 @@ namespace PresentationBlazor.Controllers
             {
                 var form = await Request.ReadFormAsync();
 
-                var result = await _controllerService.CreateTimeReport(form);
+                var result = await _controllerService.CreateTimeReportAsync(form);
 
                 if (result != null)
                 {

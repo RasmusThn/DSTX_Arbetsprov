@@ -63,11 +63,15 @@ a, .btn-link {
         content: "An error has occurred.";
     }
 .content-container {
-    display: flex;
+    /*display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100vh;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .text-container {
@@ -79,8 +83,11 @@ a, .btn-link {
     display: flex;
     justify-content: center;
     align-items: center;
+    /*display: flex;
+    justify-content: center;
+    align-items: center;
     height: 50vh;
-    margin-bottom: 15px;
+    margin-bottom: 15px;*/
 }
 
 .result-container {
@@ -97,6 +104,7 @@ a, .btn-link {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 .form-group {
@@ -118,20 +126,25 @@ a, .btn-link {
     }
 
     .form-group button {
-        margin: 0;
+        margin: 4px;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        padding: 10px 20px; /* Adjust the padding values to increase the button size */
+        font-size: 16px; 
     }
 
 .table-container {
     margin-top: 20px;
     width: 80%;
-    
-
+    overflow: auto;
 }
-
+    
 .table {
     width: 100%;
     border-collapse: collapse;
     table-layout: inherit;
+
 }
 
     .table thead th {

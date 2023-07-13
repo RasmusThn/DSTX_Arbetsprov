@@ -27,13 +27,12 @@ namespace Services
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
-        public async Task<TimeReport> GetSingleTimeReport(int reportId)
+        public async Task<TimeReport> GetSingleTimeReportAsync(int reportId)
         {
             try
             {
                 HttpResponseMessage response = await _httpClient.GetAsync($"timereport/{reportId}");
 
-                // Check if the request was successful (status code 200)
                 if (response.IsSuccessStatusCode)
                 {
                     string responseData = await response.Content.ReadAsStringAsync();
@@ -57,11 +56,10 @@ namespace Services
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that occurred during the request
                 throw new Exception("An error occurred during the API request.", ex);
             }
         }
-        public async Task<int> PostTimeReport(TransferTimeReportDto timeReport)
+        public async Task<int> PostTimeReportAsync(TransferTimeReportDto timeReport)
         {
 
             var reportContent = JsonSerializer.Serialize(timeReport);
@@ -85,7 +83,7 @@ namespace Services
             }
 
         }
-        public async Task<List<TimeReport>> GetAllTimeReports()
+        public async Task<List<TimeReport>> GetAllTimeReportsAsync()
         {
             try
             {
@@ -151,7 +149,7 @@ namespace Services
                 throw new Exception("An error occurred during the API request.", ex);
             }
         }
-        public async Task<List<TimeReport>> GetAllTimeReportsByIdAndDate(DateTime fromDate, DateTime toDate, int id)
+        public async Task<List<TimeReport>> GetAllTimeReportsByIdAndDateAsync(DateTime fromDate, DateTime toDate, int id)
         {
             try
             {

@@ -2,13 +2,16 @@
 
 <PageTitle>Single Report</PageTitle>
 
-<div class="container">
+<div class="content-container">
+    <div class="text-container">
+        <h1><em>Single Report by Id</em></h1>
+    </div>
+
     <div class="form-container">
-        <h1>Get Single Report</h1>
 
         <div class="form-group">
             <input @bind-value="@_reportID" type="text" placeholder="Report number" class="form-control" />
-            <button class="btn btn-primary" @onclick="GetSingleReport">Search</button>
+            <button class="btn btn-primary" @onclick="GetSingleReportAsync">Search</button>
         </div>
 
         @if (_timeReport != null)
@@ -34,11 +37,15 @@
 @code {
     [Inject]
     private ITimeReportService _timeReportService { get; set; }
-    private int _reportID;
-    private TimeReport _timeReport;
-   
-    private async Task GetSingleReport()
+    private int _reportID = 0;
+    private TimeReport? _timeReport;
+
+    private async Task GetSingleReportAsync()
     {
-        _timeReport = await _timeReportService.GetSingleTimeReport(_reportID);
+        if (_reportID != 0)
+        {
+            _timeReport = await _timeReportService.GetSingleTimeReportAsync(_reportID);
+        }
+
     }
 }

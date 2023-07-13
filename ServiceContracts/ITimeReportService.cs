@@ -10,10 +10,10 @@ namespace ServiceContracts
 {
     public interface ITimeReportService
     {
-        Task<TimeReport> GetSingleTimeReport(int reportId);
-        Task<int> PostTimeReport(TransferTimeReportDto timeReport);
-        Task<List<TimeReport>> GetAllTimeReports();
-        Task<List<TimeReport>> GetAllTimeReportsByIdAndDate(DateTime fromDate, DateTime toDate, int id);
+        Task<TimeReport> GetSingleTimeReportAsync(int reportId);
+        Task<int> PostTimeReportAsync(TransferTimeReportDto timeReport);
+        Task<List<TimeReport>> GetAllTimeReportsAsync();
+        Task<List<TimeReport>> GetAllTimeReportsByIdAndDateAsync(DateTime fromDate, DateTime toDate, int id);
         Task<List<Workplace>> GetAllWorkplacesAsync();
     }
 }

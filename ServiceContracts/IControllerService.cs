@@ -12,6 +12,6 @@ namespace ServiceContracts
     public interface IControllerService
     {
 
-        Task<TransferTimeReportDto> CreateTimeReport(IFormCollection form);
+        Task<TransferTimeReportDto> CreateTimeReportAsync(IFormCollection form);
     }
 }

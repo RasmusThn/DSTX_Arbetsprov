@@ -1,12 +1,6 @@
 ﻿using Entities.DataTransferObjects;
-using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using ServiceContracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -23,7 +17,7 @@ namespace Services
 
         }
 
-        public async Task<TransferTimeReportDto> CreateTimeReport(IFormCollection form)
+        public async Task<TransferTimeReportDto> CreateTimeReportAsync(IFormCollection form)
         {
             TransferTimeReportDto formattedTimeReport = new TransferTimeReportDto
             {
@@ -35,9 +29,9 @@ namespace Services
 
             int id;
 
-            //id = await _timeReportService.PostTimeReport(formattedTimeReport); 
+            id = await _timeReportService.PostTimeReportAsync(formattedTimeReport); 
 
-            id = 1337;  // UnComment this when testing and comment out above line to skip posting to API 
+            //id = 1337;  // UnComment this when testing and comment out line above to skip posting to API 
 
             formattedTimeReport.Id = id;
             

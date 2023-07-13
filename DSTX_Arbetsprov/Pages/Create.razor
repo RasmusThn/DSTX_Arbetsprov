@@ -4,66 +4,85 @@
 
 @inject IJSRuntime JSRuntime
 
-<div class="container">
-    <div class="form-container">
-        <h3>Create Time-Report</h3>
 
-        @if (workplaces == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <EditForm Context="formContext" Model="@timeReport" OnValidSubmit="HandleCreateReport">
+<div class="content-container">
+    <div class="text-container">
+        <h1><em>Create Time-Report</em></h1>
+    </div>
+
+
+    @if (workplaces == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div class="container">
+            <EditForm Context="formContext" class="form-container" Model="@timeReport" OnValidSubmit="HandleCreateReport">
                 <DataAnnotationsValidator />
 
-                <label for="DateInput">Date: </label>
-                <input type="date" id="DateInput" @bind="timeReport.Date"
-                       min="@DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd")"
-                       max="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
+                <div class="form-group">
+                    <label for="workplaceSelect">Workplace:</label>
+                    <select @onchange="SetSelectedId" id="workplaceSelect" class="form-control">
+                        @foreach (var workplace in @workplaces)
+                        {
+                            <option selected value="@workplace.Id">@workplace.Name</option>
+                        }
+                    </select>
+                </div>
 
-                <label for="HoursInput">Hours: </label>
-                <input type="number" id="HoursInput" @bind="timeReport.Hours" min="0" max="24" placeholder="Hours" />
+                <div class="form-group">
+                    <label for="DateInput">Date: </label>
+                    <input type="date" id="DateInput" @bind="timeReport.Date"
+                           min="@DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd")"
+                           max="@DateTime.Now.AddDays(7).ToString("yyyy-MM-dd")" />
+                </div>
 
-                <select @onchange="SetSelectedId" id="workplaceSelect" class="form-control">
-                    @foreach (var workplace in @workplaces)
-                    {
-                        <option selected value="@workplace.Id">@workplace.Name</option>
-                    }
-                </select>
+                <div class="form-group">
+                    <label for="HoursInput">Hours: </label>
+                    <input type="number" id="HoursInput" @bind="timeReport.Hours" min="0" max="24" placeholder="Hours" />
+                </div>
 
-                <label for="InfoInput">Info: </label>
-                <input type="text" id="InfoInput" @bind="timeReport.Info" placeholder="Info" class="form-control" />
 
-                <label for="imageInput">Image: </label>
-                <input type="file" id="imageInput" @ref="imageInputRef" class="form-control-file" />
+                <div class="form-group">
+                    <label for="InfoInput">Info: </label>
+                    <input type="text" id="InfoInput" @bind="timeReport.Info" placeholder="Info" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="imageInput">Image: </label>
+                    <input type="file" id="imageInput" @ref="imageInputRef" class="form-control-file" />
+                </div>
 
                 <ValidationMessage For="@(() => timeReport.WorkplaceId)" />
-
                 <button type="submit" class="btn btn-primary">Create</button>
             </EditForm>
 
-
-            <div class="result-container">
-                @if (validEntry)
-                {
-                    <p>
-                        Id = @timeReport.Id
-                        <br />
-                        Workplace Id = @timeReport.WorkplaceId
-                        <br />
-                        Hours = @timeReport.Hours
-                        <br />
-                        Date = @timeReport.Date.ToString("yyyy-MM-dd")
-                        <br />
-                        Extra Info = @timeReport.Info
-                    </p>
-                    <p><em>Successfully created</em></p>
-                }
-            </div>
-        }
-    </div>
+        </div>
+        <div class="result-container">
+            @if (validEntry)
+            {
+                <p>
+                    Id = @timeReport.Id
+                    <br />
+                    Workplace Id = @timeReport.WorkplaceId
+                    <br />
+                    Hours = @timeReport.Hours
+                    <br />
+                    Date = @timeReport.Date.ToString("yyyy-MM-dd")
+                    <br />
+                    Extra Info = @timeReport.Info
+                </p>
+                <p><em>Successfully created</em></p>
+            }
+            @if (unvalidEntry)
+            {
+                <p><em>Something went wrong in the process of creating a Report</em></p>
+            }
+        </div>
+    }
 </div>
+
 
 @code {
     [Inject]
@@ -71,10 +90,11 @@
     private TimeReport timeReport { get; set; } = new();
     private List<Workplace> workplaces;
     private bool validEntry { get; set; } = false;
+    private bool unvalidEntry { get; set; } = false;
     private int selectedId = 0;
     private IBrowserFile imageFile;
     private ElementReference imageInputRef;
-    
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -91,6 +111,8 @@
     }
     private async Task HandleCreateReport()
     {
+        validEntry = false;
+        unvalidEntry = false;
         var response = await JSRuntime.InvokeAsync<TransferTimeReportDto>("handleImageUpload", imageInputRef);
 
         if (response != null && !string.IsNullOrEmpty(response.Id.ToString()))
@@ -105,7 +127,7 @@
         }
         else
         {
-            // Operation failed or response is null or missing required properties
+            unvalidEntry = true;
         }
 
     }
