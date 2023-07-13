@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{3EC25848-59D9-4FB1-BBDD-010135F41AB5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{DDBD3788-EEFB-4CA4-9EEA-D0EE9014ADFC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceContracts", "ServiceContracts\ServiceContracts.csproj", "{64A42DE3-AEC3-4990-82F9-F5FD21A74811}"
 EndProject
 Global
@@ -37,10 +35,6 @@ Global
 		{3EC25848-59D9-4FB1-BBDD-010135F41AB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EC25848-59D9-4FB1-BBDD-010135F41AB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EC25848-59D9-4FB1-BBDD-010135F41AB5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDBD3788-EEFB-4CA4-9EEA-D0EE9014ADFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDBD3788-EEFB-4CA4-9EEA-D0EE9014ADFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDBD3788-EEFB-4CA4-9EEA-D0EE9014ADFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDBD3788-EEFB-4CA4-9EEA-D0EE9014ADFC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{64A42DE3-AEC3-4990-82F9-F5FD21A74811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{64A42DE3-AEC3-4990-82F9-F5FD21A74811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64A42DE3-AEC3-4990-82F9-F5FD21A74811}.Release|Any CPU.ActiveCfg = Release|Any CPU

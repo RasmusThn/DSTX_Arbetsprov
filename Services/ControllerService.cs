@@ -13,12 +13,13 @@ namespace Services
     public class ControllerService : IControllerService
     {
         private readonly ITimeReportService _timeReportService;
+        private readonly IDataAccessService _dataAccessService;
 
-
-        public ControllerService(ITimeReportService timeReportService)
+        public ControllerService(ITimeReportService timeReportService,IDataAccessService dataAccessService)
         {
 
             _timeReportService = timeReportService;
+            _dataAccessService = dataAccessService;
 
         }
 
@@ -34,20 +35,18 @@ namespace Services
             };
 
             int id;
-            id = await _timeReportService.PostTimeReport(formattedTimeReport);
-           
-            formattedTimeReport.Id = id;
 
-            //Saving file and Id to Database
+            id = await _timeReportService.PostTimeReport(formattedTimeReport); 
+
+            //id = 1337;  // UnComment this when testing and comment out above line to skip posting to API 
+
+            formattedTimeReport.Id = id;
+            
+            //Saving file, filename and Id to Database
             var file = form.Files["image"];
             if (file != null && file.Length > 0)
             {
-                // You can save the file to disk or process it in any other way
-                // For demonstration purposes, let's just retrieve the file name
-                var fileName = file.FileName;
-                // Implement your logic to create a time report using the extracted values
-                // and the uploaded file information
-
+                _dataAccessService.SaveFileToDB(file,id);
             }
             return formattedTimeReport;
         }

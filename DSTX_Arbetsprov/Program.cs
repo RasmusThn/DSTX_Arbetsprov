@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using ServiceContracts;
 using Services;
+using DataAccess;
+using System.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +16,14 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<ITimeReportService, TimeReportService>();
 builder.Services.AddSingleton<IControllerService, ControllerService>();
+builder.Services.AddSingleton<IDataAccessService, DataAccessService>(provider =>
+{
+    // Read the connection string from appsettings.json
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+    // Instantiate the DataAccessService with the connection string
+    return new DataAccessService(connectionString);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
