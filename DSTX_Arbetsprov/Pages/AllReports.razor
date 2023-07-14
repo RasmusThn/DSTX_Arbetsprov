@@ -1,5 +1,6 @@
 ﻿@page "/reports"
 
+
 <PageTitle>Time Reports</PageTitle>
 
 <div class="content-container">
@@ -15,14 +16,14 @@
         <div class="container">
             <div class="form-container">
                 <div class="form-group">
-                <label for="workplace">Workplace:</label>
-                <select @onchange="SetSelectedId" name="workplace" class="form-control">
-                    <option value="0" selected>All</option>
-                    @foreach (var workplace in @workplaces)
-                    {
-                        <option value="@workplace.Id">@workplace.Name (@workplace.Id)</option>
-                    }
-                </select>
+                    <label for="workplace">Workplace:</label>
+                    <select @onchange="SetSelectedId" name="workplace" class="form-control">
+                        <option value="0" selected>All</option>
+                        @foreach (var workplace in @workplaces)
+                        {
+                            <option value="@workplace.Id">@workplace.Name (@workplace.Id)</option>
+                        }
+                    </select>
 
                 </div>
                 <div class="form-group">
@@ -35,9 +36,9 @@
                     <input @bind-value="dates[1]" name="todate" type="date" class="form-control" max="@dateTimeNow.AddDays(7)" />
                 </div>
 
-                
-                    <button @onclick="GetAllTimeReportsById" class="btn btn-primary" type="submit">Search</button>
-                
+
+                <button @onclick="GetAllTimeReportsById" class="btn btn-primary" type="submit">Search</button>
+
             </div>
         </div>
 
@@ -82,106 +83,5 @@
             </div>
         }
     }
+    <ErrorComponent Error="@_error" ErrorMessage="@_errorMessage" />
 </div>
-
-@code {
-    [Inject]
-    private ITimeReportService _timeReportService { get; set; }
-    private List<TimeReport> timeReportList;
-    private List<Workplace> workplaces;
-    private int selectedId = 0;
-    private DateTime[] dates = new DateTime[2];
-    private DateTime dateTimeNow = DateTime.Now;
-
-    private bool sortByDateAscending = true;
-    private bool sortByTemperatureCAscending = true;
-    private bool sortByTemperatureFAscending = true;
-    private bool sortBySummaryAscending = true;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        dates[0] = new DateTime(2017,10,20);
-        dates[1] = dateTimeNow;
-        try
-        {
-        workplaces = await _timeReportService.GetAllWorkplacesAsync();
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("An error occurred while retrieving time reports: " + ex.Message);
-        }
-    }
-    private async Task SetSelectedId(ChangeEventArgs e)
-    {
-        selectedId = Convert.ToInt32(e.Value);
-
-    }
-    private async Task GetAllTimeReportsById()
-    {
-        try
-        {
-        timeReportList = await _timeReportService.GetAllTimeReportsByIdAndDateAsync(dates[0], dates[1], selectedId);
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("An error occurred while retrieving time reports: " + ex.Message);
-        }
-    }
-
-    #region Sorting
-    private void SortByDate()
-    {
-        if (sortByDateAscending)
-        {
-            timeReportList = timeReportList.OrderBy(f => f.Date).ToList();
-        }
-        else
-        {
-            timeReportList = timeReportList.OrderByDescending(f => f.Date).ToList();
-        }
-        sortByDateAscending = !sortByDateAscending;
-    }
-
-    private void SortByHour()
-    {
-        if (sortByTemperatureCAscending)
-        {
-            timeReportList = timeReportList.OrderBy(f => f.Hours).ToList();
-        }
-        else
-        {
-            timeReportList = timeReportList.OrderByDescending(f => f.Hours).ToList();
-        }
-        sortByTemperatureCAscending = !sortByTemperatureCAscending;
-    }
-
-    private void SortByWorkplaceId()
-    {
-        if (sortByTemperatureFAscending)
-        {
-            timeReportList = timeReportList.OrderBy(f => f.WorkplaceId).ToList();
-        }
-        else
-        {
-            timeReportList = timeReportList.OrderByDescending(f => f.WorkplaceId).ToList();
-        }
-        sortByTemperatureFAscending = !sortByTemperatureFAscending;
-    }
-
-    private void SortById()
-    {
-        if (sortBySummaryAscending)
-        {
-            timeReportList = timeReportList.OrderBy(f => f.Id).ToList();
-        }
-        else
-        {
-            timeReportList = timeReportList.OrderByDescending(f => f.Id).ToList();
-        }
-        sortBySummaryAscending = !sortBySummaryAscending;
-    }
-    #endregion
-}

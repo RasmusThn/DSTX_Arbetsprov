@@ -62,20 +62,6 @@ namespace Services
 
             return id;
         }
-        [Obsolete]//TODO:kolla om den är de.
-        public async Task<List<TimeReport>> GetAllTimeReportsAsync()
-        {
-            HttpResponseMessage response = await _httpClient.GetAsync("timereport").ConfigureAwait(false);
-            await HandleResponseAsync(response);
-
-            string responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            List<TransferTimeReportDto> transferTimeReports = JsonSerializer.Deserialize<List<TransferTimeReportDto>>(responseData, _options);
-
-            // Map the TransferTimeReportDto objects to TimeReport objects
-            List<TimeReport> timeReports = transferTimeReports?.Select(MapTransferToTimeReport).ToList();
-
-            return timeReports;
-        }
         public async Task<List<Workplace>> GetAllWorkplacesAsync()
         {
             HttpResponseMessage response = await _httpClient.GetAsync("workplace").ConfigureAwait(false);
@@ -86,7 +72,7 @@ namespace Services
 
             return workplaces;
         }
-        public async Task<List<TimeReport>> GetAllTimeReportsByIdAndDateAsync(DateTime fromDate, DateTime toDate, int id)
+        public async Task<List<TimeReport>> GetAllTimeReportsByWorkplaceIdAndDateAsync(DateTime fromDate, DateTime toDate, int id)
         {
             string from_date = fromDate.ToString("yyyy-MM-dd");
             string to_date = toDate.ToString("yyyy-MM-dd");

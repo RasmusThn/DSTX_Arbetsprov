@@ -1,4 +1,6 @@
 ﻿@page "/report"
+@using PresentationBlazor.Components
+
 
 <PageTitle>Single Report</PageTitle>
 
@@ -33,28 +35,8 @@
             </div>
         }
     </div>
+    
+        <ErrorComponent Error="@_error" ErrorMessage="@_errorMessage" />
+    
 </div>
-@code {
-    [Inject]
-    private ITimeReportService _timeReportService { get; set; }
-    private int _reportID = 0;
-    private TimeReport? _timeReport;
 
-    private async Task GetSingleReportAsync()
-    {
-        if (_reportID != 0)
-        {
-            try
-            {
-            _timeReport = await _timeReportService.GetSingleTimeReportAsync(_reportID);
-
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine("An error occurred while retrieving time report: " + ex.Message);
-            }
-        }
-
-    }
-}
