@@ -1,6 +1,6 @@
 # DSTX_Arbetsprov
 
-1. Create Database and Table, info down below.
+1. Create a MySQL Database and Table, info down below.
 2. Go to ~\source\repos\DSTX_Arbetsprov\DSTX_Arbetsprov\appsettings.json and change, "MyNotSoSecretToken": "Api-Key Here", to your Key.
 3. And in the same file set det DefaultConnection to the connection-string for your Db
           
